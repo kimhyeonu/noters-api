@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server-express');
+$sconst { gql } = require('apollo-server-express');
 
 module.exports = gql`
   type Note {
@@ -13,6 +13,9 @@ module.exports = gql`
   }
 
   type Mutation {
+    # TODO: newNote -> createNote
     newNote(content: String!): Note
+    updateNote(id: ID!, content: String!): Note!
+    deleteNote(id: ID!): Boolean!
   }
 `;
