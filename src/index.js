@@ -1,67 +1,28 @@
 require('dotenv').config();
 
 const express = require('express');
-const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
 
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
 const db = require('./db');
 const models = require('./models');
 
 const port = process.env.PORT || 4000;
 const DB_HOST = process.env.DB_HOST;
 
-let notes = [
-  { id: '1', content: 'This is a note.', author: 'Adam Scott' },
-  { id: '2', content: 'This is another note.', author: 'Harlow Everly' },
-  { id: '3', content: 'Oh hey look, another note!', author: 'Riley Harrison' },
-];
-
-// GraphQL 스키마 언어로 스키마를 구성한다.
-const typeDefs = gql`
-  type Note {
-    id: ID!
-    content: String
-    author: String
-  }
-
-  type Query {
-    hello: String
-    notes: [Note]
-    note(id: ID): Note
-  }
-
-  type Mutation {
-    newNote(content: String!): Note
-  }
-`;
-
-// 스키마 필드를 위한 리졸버 함수를 제공한다.
-const resolvers = {
-  Query: {
-    hello: () => 'Hello, World!',
-    notes: async () => {
-      return await models.Note.find();
-    },
-    note: async (parent, args) => {
-      return await models.Note.findById(args.id);
-    },
-  },
-
-  Mutation: {
-    newNote: async (parent, args) => {
-      return await models.Note.create({
-        content: args.content,
-        author: 'Adam Scott',
-      });
-    },
-  },
-};
-
 // 익스프레스 애플리케이션을 생성한다.
 const app = express();
 // DB에 연결한다.
 db.connect(DB_HOST);
 // 아폴로 서버를 설정한다.
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: () => {
+    return { models };
+  },
+});
 
 // 아폴로 GraphQL 미들웨어를 적용하고 경로를 '/api'로 설정한다.
 server.applyMiddleware({ app, path: '/api' });
