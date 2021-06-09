@@ -1,0 +1,49 @@
+{
+  "name": "javascript-master",
+  "version": "1.0.0",
+  "description": "자바스크립트(JavaScript)는 웹(Web), 모바일(Mobile), 데스크탑(Desktop) 등 플랫폼을 가리지 않고 빠르게 좋은 품질의 소프트웨어를 개발할 수 있도록 도와줍니다. 이곳에서는 자바스크립트를 사용하여 다양한 소프트웨어를 만들어 봅니다.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "dev": "nodemon src/index.js",
+    "final": "nodemon final/index.js",
+    "seed": "node final/util/seed/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kimhyeonu/javascript-master.git"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**.test.js"
+    ]
+  },
+  "keywords": [],
+  "author": "kimhyeonu",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server-express": "2.4.0",
+    "bcrypt": "3.0.6",
+    "cors": "2.8.5",
+    "dotenv": "6.1.0",
+    "express": "4.16.4",
+    "express-session": "1.15.6",
+    "graphql": "^14.1.1",
+    "graphql-depth-limit": "1.1.0",
+    "graphql-iso-date": "3.6.1",
+    "graphql-validation-complexity": "0.2.4",
+    "helmet": "3.21.2",
+    "jsonwebtoken": "8.5.1",
+    "marked": "0.7.0",
+    "md5": "2.2.1",
+    "mongoose": "5.7.13",
+    "nodemon": "1.18.7",
+    "passport": "0.4.0",
+    "passport-github2": "0.1.11"
+  },
+  "devDependencies": {
+    "faker": "4.1.0",
+    "node-fetch": "2.5.0",
+    "prettier": "1.18.2"
+  }
+}
