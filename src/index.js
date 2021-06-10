@@ -17,7 +17,7 @@ const getUser = (token) => {
     try {
       return jwt.verify(token, process.env.JWT_SECRET);
     } catch (err) {
-      throw new Error('토큰에 문제가 있습니다!');
+      throw new Error('토큰 발급에 문제가 발생하였습니다!');
     }
   }
 };

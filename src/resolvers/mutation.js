@@ -1,4 +1,5 @@
 require('dotenv').config();
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {
@@ -9,14 +10,33 @@ const {
 const gravatar = require('../utils/gravatar');
 
 module.exports = {
-  createNote: async (parent, args, { models }) => {
+  createNote: async (parent, args, { models, user }) => {
+    if (!user) {
+      throw new AuthenticationError(
+        '노트를 생성하기 위해서는 계정에 접속해야 합니다!'
+      );
+    }
+
     return await models.Note.create({
       content: args.content,
-      author: 'Adam Scott',
+      author: mongoose.Types.ObjectId(user.id),
     });
   },
 
-  updateNote: async (parent, { content, id }, { models }) => {
+  updateNote: async (parent, { content, id }, { models, user }) => {
+    if (!user) {
+      throw new AuthenticationError(
+        '노트를 삭제하기 위해서는 계정에 접속해야 합니다!'
+      );
+    }
+
+    const note = await models.Note.findById(id);
+    if (note && String(note.author) !== user.id) {
+      throw new ForbiddenError(
+        '노트를 수정하기 위한 권한이 존재하지 않습니다!'
+      );
+    }
+
     return await models.Note.findOneAndUpdate(
       {
         _id: id,
@@ -32,9 +52,22 @@ module.exports = {
     );
   },
 
-  deleteNote: async (parent, { id }, { models }) => {
+  deleteNote: async (parent, { id }, { models, user }) => {
+    if (!user) {
+      throw new AuthenticationError(
+        '노트를 삭제하기 위해서는 계정에 접속해야 합니다!'
+      );
+    }
+
+    const note = await models.Note.findById(id);
+    if (note && String(note.author) !== user.id) {
+      throw new ForbiddenError(
+        '노트를 삭제하기 위한 권한이 존재하지 않습니다!'
+      );
+    }
+
     try {
-      await models.Note.findOneAndRemove({ _id: id });
+      await note.remove();
       return true;
     } catch (err) {
       return false;
