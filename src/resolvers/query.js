@@ -4,7 +4,7 @@ module.exports = {
   },
 
   notes: async (parent, args, { models }) => {
-    return await models.Note.find();
+    return await models.Note.find().limit(100);
   },
 
   noteFeed: async (parent, { cursor }, { models }) => {
@@ -39,7 +39,7 @@ module.exports = {
   },
 
   users: async (parent, args, { models }) => {
-    return await models.User.find({});
+    return await models.User.find({}).limit(100);
   },
 
   me: async (parent, args, { models, user }) => {

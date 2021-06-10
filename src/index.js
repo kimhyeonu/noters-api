@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
+const depthLimit = require('graphql-depth-limit');
+const { createComplexityLimitRule } = require('graphql-validation-complexity');
 const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -36,6 +38,7 @@ db.connect(DB_HOST);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  validationRules: [depthLimit(5), createComplexityLimitRule(1000)],
   context: ({ req }) => {
     // 요청 헤더로부터 토큰을 가져온다.
     const token = req.headers.authorization;
