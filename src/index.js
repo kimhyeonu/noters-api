@@ -3,6 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const jwt = require('jsonwebtoken');
+const helmet = require('helmet');
+const cors = require('cors');
 
 const typeDefs = require('./schema');
 const resolvers = require('./resolvers');
@@ -24,6 +26,10 @@ const getUser = (token) => {
 
 // 익스프레스 애플리케이션을 생성한다.
 const app = express();
+
+app.use(helmet());
+app.use(cors());
+
 // DB에 연결한다.
 db.connect(DB_HOST);
 // 아폴로 서버를 설정한다.
