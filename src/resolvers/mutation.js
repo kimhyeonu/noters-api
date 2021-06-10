@@ -63,4 +63,25 @@ module.exports = {
       throw new Error('계정을 생성하는 도중에 오류가 발생하였습니다!');
     }
   },
+
+  signIn: async (parent, { username, email, password }, { models }) => {
+    if (email) {
+      email = email.trim().toLowerCase();
+    }
+
+    const user = await models.User.findOne({
+      $or: [{ email }, { username }],
+    });
+
+    if (!user) {
+      throw new AuthenticationError('사용자가 존재하지 않습니다!');
+    }
+
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+      throw new AuthenticationError('잘못된 패스워드입니다.');
+    }
+
+    return jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+  },
 };
