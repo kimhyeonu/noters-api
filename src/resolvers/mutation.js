@@ -1,3 +1,13 @@
+require('dotenv').config();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const {
+  AuthenticationError,
+  ForbiddenError,
+} = require('apollo-server-express');
+
+const gravatar = require('../utils/gravatar');
+
 module.exports = {
   createNote: async (parent, args, { models }) => {
     return await models.Note.create({
@@ -28,6 +38,29 @@ module.exports = {
       return true;
     } catch (err) {
       return false;
+    }
+  },
+
+  signUp: async (parent, { username, email, password }, { models }) => {
+    email = email.trim().toLowerCase();
+
+    const saltRounds = 10;
+    const hashed = await bcrypt.hash(password, saltRounds);
+
+    const avatar = gravatar(email);
+
+    try {
+      const user = await models.User.create({
+        username,
+        email,
+        avatar,
+        password: hashed,
+      });
+
+      return jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    } catch (err) {
+      console.error(err);
+      throw new Error('계정을 생성하는 도중에 오류가 발생하였습니다!');
     }
   },
 };

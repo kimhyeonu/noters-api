@@ -12,12 +12,12 @@ const userSchema = new mongoose.Schema(
       required: true,
       index: { unique: true },
     },
+    avatar: {
+      type: String,
+    },
     password: {
       type: String,
       required: true,
-    },
-    avatar: {
-      type: String,
     },
   },
   {
